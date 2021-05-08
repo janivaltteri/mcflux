@@ -1,0 +1,21 @@
+* mcflux
+
+A collection of scripts for manual chamber flux calculations. Currently this repo contains some bash and Julia scripts I use at work for processing a) Excel format field forms and b) Li-Cor data files to calculate linear fit flux values.
+
+The files are:
+
+- ~bash/generate-csvs.sh~
+
+A bash script which converts ~.xlsx~ field forms in a directory to ~.csv~ human readable files. The directory name should be given as argument. Uses ~xlsx2csv~.
+
+- ~bash/join-pdf-figs.sh~
+
+A bash script I use to join the flux figure files (one is generated per row in field form) to a single pdf document. Processes files in current directory with the name given as argument. Uses ~pdfunite~.
+
+- ~jl/mcflux.jl~
+
+The main file containing all the necessary functions for processing a directory of ~.csv~ field forms together with ~.data~ data files. The file names must otherwise be identical.
+
+- ~jl/handler.jl~
+
+An example usage file.
