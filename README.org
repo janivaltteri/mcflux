@@ -1,6 +1,6 @@
 * mcflux
 
-A collection of scripts for manual chamber flux calculations. Currently this repo contains some bash and Julia scripts I use at work for processing a) Excel format field forms and b) Li-Cor data files to calculate linear fit flux values.
+A collection of scripts for manual chamber flux calculations. Currently this repo contains some bash and Julia scripts I use at work for processing a) Excel format field forms and b) Li-Cor data files to calculate linear fit flux values. Non-linear (concave) fits are not considered here because the mesurement period is usually too short (a few minutes) to show actual saturation inside the chamber.
 
 The files are:
 
@@ -19,3 +19,5 @@ The main file containing all the necessary functions for processing a directory 
 - ~jl/handler.jl~
 
 An example usage file.
+
+
