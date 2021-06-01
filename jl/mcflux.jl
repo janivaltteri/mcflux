@@ -104,35 +104,23 @@ function fill_out_obj(mdf::DataFrame,ddf::DataFrame,
         ## also: handle the very annoying additional collar case
         ## todo: this could be much neater...
         if !ismissing(mdf[r,"Notice!"]) && !isnothing(findfirst("LISÄKAULUS",mdf[r,"Notice!"]))
-            co2o.lin_flux_s0[r] = round((co2cs0[2] *
-                                         getflux(A,Va,T_mean,Mco2)) / 1000,
-                                        digits=3);
-            ch4o.lin_flux_s0[r] = round((ch4cs0[2] *
-                                         getflux(A,Va,T_mean,Mch4)),
-                                        digits=3);
-            co2o.lin_flux_skip[r] = round((co2c[2] *
-                                           getflux(A,Va,T_mean,Mco2)) / 1000,digits=3);
-            ch4o.lin_flux_skip[r] = round((ch4c[2] *
-                                           getflux(A,Va,T_mean,Mch4)),digits=3);
             ##println("using lisäkaulus at row ",r)
+            co2o.lin_flux_s0[r] = (co2cs0[2] * getflux(A,Va,T_mean,Mco2)) / 1000.0;
+            ch4o.lin_flux_s0[r] = ch4cs0[2] * getflux(A,Va,T_mean,Mch4);
+            co2o.lin_flux_skip[r] = (co2c[2] * getflux(A,Va,T_mean,Mco2)) / 1000.0;
+            ch4o.lin_flux_skip[r] = ch4c[2] * getflux(A,Va,T_mean,Mch4);
         else
             ## [mg CO2 m-2 h-1]
-            co2o.lin_flux_s0[r] = round((co2cs0[2] *
-                                         getflux(A,V,T_mean,Mco2)) / 1000,
-                                        digits=3);
-            ch4o.lin_flux_s0[r] = round((ch4cs0[2] *
-                                         getflux(A,V,T_mean,Mch4)),
-                                        digits=3);
-            co2o.lin_flux_skip[r] = round((co2c[2] *
-                                           getflux(A,V,T_mean,Mco2)) / 1000,digits=3);
-            ch4o.lin_flux_skip[r] = round((ch4c[2] *
-                                           getflux(A,V,T_mean,Mch4)),digits=3);
+            co2o.lin_flux_s0[r] = (co2cs0[2] * getflux(A,V,T_mean,Mco2)) / 1000.0;
+            ch4o.lin_flux_s0[r] = ch4cs0[2] * getflux(A,V,T_mean,Mch4);
+            co2o.lin_flux_skip[r] = (co2c[2] * getflux(A,V,T_mean,Mco2)) / 1000.0;
+            ch4o.lin_flux_skip[r] = ch4c[2] * getflux(A,V,T_mean,Mch4);
         end
         ## calculate residual variation for the skips case
-        co2rv = residual_variation(co2c[1],co2c[2],skips,subs[:,:secs],subs[:,:CO2]);
-        ch4rv = residual_variation(ch4c[1],ch4c[2],skips,subs[:,:secs],subs[:,:CH4]);
-        co2o.residual[r] = round(co2rv,digits=3);
-        ch4o.residual[r] = round(ch4rv,digits=3);
+        co2o.residual[r] = residual_variation(co2c[1],co2c[2],skips,
+                                              subs[:,:secs],subs[:,:CO2]);
+        ch4o.residual[r] = residual_variation(ch4c[1],ch4c[2],skips,
+                                              subs[:,:secs],subs[:,:CH4]);
         ## store the (skips) linear coefficients for plotting later
         co2o.icept[r] = co2c[1]; co2o.lcoef[r] = co2c[2];
         ch4o.icept[r] = ch4c[1]; ch4o.lcoef[r] = ch4c[2];
@@ -172,7 +160,8 @@ function plot_out_obj(mdf::DataFrame,ddf::DataFrame,modnum::String,basename::Str
                   marker = (:hex, 2, 0.8, Plots.stroke(1, :gray)), label = "skipped",
                   title = co2titlestring, show = false,
                   annotation = (0,maximum(fitp[:,:CO2])-2,
-                                Plots.text(string("RMSE = ",co2o.residual[mr]),
+                                Plots.text(string("RMSE = ",
+                                                  round(co2o.residual[mr],digits=3)),
                                            12,:black,:left)));
         plot!(p1,fitp[:,:secs], fitp[:,:CO2], seriestype = :scatter, color = :red,
               marker = (:hex, 3, 0.8, Plots.stroke(1, :gray)), label = "fitted",
@@ -183,7 +172,8 @@ function plot_out_obj(mdf::DataFrame,ddf::DataFrame,modnum::String,basename::Str
                   marker = (:hex, 2, 0.8, Plots.stroke(1, :gray)), label = "skipped",
                   title = ch4titlestring, show = false,
                   annotation = (0,minimum(fitp[:,:CH4])+1,
-                                Plots.text(string("RMSE = ",ch4o.residual[mr]),
+                                Plots.text(string("RMSE = ",
+                                                  round(ch4o.residual[mr],digits=3)),
                                            12,:black,:left)));
         plot!(p2,fitp[:,:secs], fitp[:,:CH4], seriestype = :scatter, color = :red,
               marker = (:hex, 3, 0.8, Plots.stroke(1, :gray)), label = "fitted",
